@@ -2,9 +2,18 @@
 
 A comprehensive, zero-cost Point of Sale system designed for rural spaza shops in South Africa. Built with Python and SQLite for maximum compatibility and minimal dependencies.
 
-##  Quick Start
+## Quick Start
 
-### 1. Setup
+### Easy Installation (Recommended)
+
+For the best installation experience, see our **[Master Installation Guide](MASTER_INSTALLATION_GUIDE.md)** which provides 6 different installation methods.
+
+**Quick Options:**
+- **Windows:** Run `.\install_wizard.ps1` (PowerShell)
+- **All Platforms:** Run `python universal_installer.py`
+- **Manual:** Follow the steps below
+
+### 1. Manual Setup
 ```bash
 # Clone or download the project
 cd VSCode-Koeka-Shop
@@ -13,8 +22,10 @@ cd VSCode-Koeka-Shop
 pip install -r requirements.txt
 
 # Initialize the system
-python main.py
+python app.py
 ```
+
+**Default Login:** Username: `admin` | Password: `admin123`
 
 ### 2. Test Core Functionality
 ```bash
@@ -25,9 +36,9 @@ python test_core_functionality.py
 python demo_cli.py
 ```
 
-##  Current Implementation Status
+## Current Implementation Status
 
-###  CORE FEATURES IMPLEMENTED
+### CORE FEATURES IMPLEMENTED
 - **Database Schema** - Complete SQLite setup with all required tables
 - **Product Management** - CRUD operations, stock tracking, barcode support
 - **Sales Processing** - Multi-item transactions, payment handling, stock reduction
@@ -38,13 +49,13 @@ python demo_cli.py
 - **Data Validation** - Comprehensive input validation and security
 - **Settings Management** - Configurable system parameters
 
-###  IN DEVELOPMENT
+### IN DEVELOPMENT
 - **User Management** - Authentication and role-based access
 - **GUI Interface** - Tkinter-based user interface
 - **Daily Cash Management** - Till reconciliation and reporting
 - **Basic Reporting** - Daily and monthly reports
 
-###  PLANNED FEATURES
+### PLANNED FEATURES
 - **Barcode Scanner Integration**
 - **Backup & Restore System**
 - **Advanced Reporting & Analytics**

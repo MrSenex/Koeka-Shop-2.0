@@ -102,6 +102,8 @@ class ProductManagementWindow:
                   style='Action.TButton').pack(side=tk.LEFT, padx=(0, 5))
         ttk.Button(actions_frame, text=" Stock Adjustment", command=self.adjust_stock, 
                   style='Action.TButton').pack(side=tk.LEFT, padx=(0, 5))
+        ttk.Button(actions_frame, text="📁 Archived Products", command=self.show_archived_products, 
+                  style='Action.TButton').pack(side=tk.LEFT, padx=(0, 5))
         ttk.Button(actions_frame, text=" Refresh", command=self.refresh_product_list, 
                   style='Action.TButton').pack(side=tk.RIGHT)
         
@@ -460,7 +462,7 @@ Dates:
                 self.status_label.config(text="Product updated successfully")
                 
     def delete_product(self):
-        """Delete selected product"""
+        """Delete selected product with safety checks"""
         if not self.selected_product_id:
             messagebox.showwarning("No Selection", "Please select a product to delete")
             return
@@ -468,22 +470,166 @@ Dates:
         product = self.product_manager.get_product_by_id(self.selected_product_id)
         if not product:
             return
+        
+        # Check if product can be safely deleted
+        delete_info = self.product_manager.can_delete_product(self.selected_product_id)
+        
+        if delete_info['can_delete']:
+            # Safe to delete - no sales or movements
+            if messagebox.askyesno("Confirm Delete", 
+                                 f"Are you sure you want to permanently delete '{product.name}'?\n\n"
+                                 f"This action cannot be undone."):
+                try:
+                    success = self.product_manager.delete_product(self.selected_product_id, self.user.id)
+                    if success:
+                        self.refresh_product_list()
+                        self.clear_product_details()
+                        self.status_label.config(text="Product deleted successfully")
+                    else:
+                        messagebox.showerror("Error", "Failed to delete product")
+                        
+                except Exception as e:
+                    messagebox.showerror("Error", f"Failed to delete product: {str(e)}")
+        else:
+            # Product has associated data - offer options
+            sales_count = delete_info['sales_count']
+            movements_count = delete_info['movements_count']
             
-        # Confirm deletion
-        if messagebox.askyesno("Confirm Delete", 
-                             f"Are you sure you want to delete '{product.name}'?\n\n"
-                             f"This action cannot be undone."):
+            message = f"Cannot safely delete '{product.name}':\n\n"
+            message += f"• {sales_count} associated sales transactions\n"
+            message += f"• {movements_count} stock movements\n\n"
+            message += "Choose an action:\n"
+            message += "• Archive: Hide product but keep all data (Recommended)\n"
+            message += "• Force Delete: Permanently delete (NOT recommended)\n"
+            message += "• Cancel: Keep product unchanged"
+            
+            # Create custom dialog
+            self._show_delete_options_dialog(product, delete_info)
+    
+    def _show_delete_options_dialog(self, product, delete_info):
+        """Show dialog with delete/archive options"""
+        dialog = tk.Toplevel(self.root)
+        dialog.title("Product Deletion Options")
+        dialog.geometry("500x400")
+        dialog.resizable(False, False)
+        dialog.grab_set()
+        
+        # Center the dialog
+        dialog.transient(self.root)
+        dialog.update_idletasks()
+        x = (dialog.winfo_screenwidth() // 2) - (dialog.winfo_width() // 2)
+        y = (dialog.winfo_screenheight() // 2) - (dialog.winfo_height() // 2)
+        dialog.geometry(f"+{x}+{y}")
+        
+        # Main frame
+        main_frame = ttk.Frame(dialog, padding="20")
+        main_frame.pack(fill=tk.BOTH, expand=True)
+        
+        # Title
+        title_label = ttk.Label(main_frame, text=f"Delete Product: {product.name}", 
+                               font=('Arial', 12, 'bold'))
+        title_label.pack(pady=(0, 15))
+        
+        # Warning message
+        warning_frame = ttk.Frame(main_frame)
+        warning_frame.pack(fill=tk.X, pady=(0, 15))
+        
+        warning_text = f"⚠️ This product has associated data:\n\n"
+        warning_text += f"• {delete_info['sales_count']} sales transactions\n"
+        warning_text += f"• {delete_info['movements_count']} stock movements\n"
+        warning_text += f"• Current stock: {delete_info['current_stock']} units"
+        
+        warning_label = ttk.Label(warning_frame, text=warning_text, justify=tk.LEFT)
+        warning_label.pack()
+        
+        # Options frame
+        options_frame = ttk.LabelFrame(main_frame, text="Choose Action", padding="15")
+        options_frame.pack(fill=tk.X, pady=15)
+        
+        # Archive option (recommended)
+        archive_frame = ttk.Frame(options_frame)
+        archive_frame.pack(fill=tk.X, pady=5)
+        
+        ttk.Button(archive_frame, text="📁 Archive Product (Recommended)", 
+                  command=lambda: self._archive_product(dialog, product),
+                  style='Action.TButton').pack(anchor=tk.W)
+        
+        archive_desc = ttk.Label(archive_frame, 
+                                text="• Hides product from active lists\n• Preserves all historical data\n• Can be restored later",
+                                font=('Arial', 9), foreground='green')
+        archive_desc.pack(anchor=tk.W, padx=(20, 0), pady=(5, 0))
+        
+        # Separator
+        ttk.Separator(options_frame, orient='horizontal').pack(fill=tk.X, pady=15)
+        
+        # Force delete option
+        force_frame = ttk.Frame(options_frame)
+        force_frame.pack(fill=tk.X, pady=5)
+        
+        ttk.Button(force_frame, text="🗑️ Force Delete (Not Recommended)", 
+                  command=lambda: self._force_delete_product(dialog, product),
+                  style='Action.TButton').pack(anchor=tk.W)
+        
+        force_desc = ttk.Label(force_frame, 
+                              text="• Permanently removes product\n• Keeps historical data orphaned\n• Cannot be undone",
+                              font=('Arial', 9), foreground='red')
+        force_desc.pack(anchor=tk.W, padx=(20, 0), pady=(5, 0))
+        
+        # Buttons frame
+        button_frame = ttk.Frame(main_frame)
+        button_frame.pack(fill=tk.X, pady=(20, 0))
+        
+        ttk.Button(button_frame, text="Cancel", 
+                  command=dialog.destroy).pack(side=tk.RIGHT, padx=(5, 0))
+    
+    def _archive_product(self, dialog, product):
+        """Archive the product"""
+        try:
+            success = self.product_manager.archive_product(self.selected_product_id, self.user.id)
+            dialog.destroy()
+            
+            if success:
+                self.refresh_product_list()
+                self.clear_product_details()
+                self.status_label.config(text=f"Product '{product.name}' archived successfully")
+                messagebox.showinfo("Success", 
+                                   f"Product '{product.name}' has been archived.\n\n"
+                                   f"It's no longer visible in active product lists but "
+                                   f"all historical data is preserved.")
+            else:
+                messagebox.showerror("Error", "Failed to archive product")
+                
+        except Exception as e:
+            dialog.destroy()
+            messagebox.showerror("Error", f"Failed to archive product: {str(e)}")
+    
+    def _force_delete_product(self, dialog, product):
+        """Force delete the product after final confirmation"""
+        confirm_msg = f"⚠️ FINAL WARNING ⚠️\n\n"
+        confirm_msg += f"You are about to PERMANENTLY DELETE '{product.name}'.\n\n"
+        confirm_msg += f"This will:\n"
+        confirm_msg += f"• Remove the product forever\n"
+        confirm_msg += f"• Leave orphaned historical data\n"
+        confirm_msg += f"• Cannot be undone\n\n"
+        confirm_msg += f"Are you absolutely sure you want to proceed?"
+        
+        if messagebox.askyesno("Final Confirmation", confirm_msg, icon='warning'):
             try:
-                success = self.product_manager.delete_product(self.selected_product_id, self.user.id)
+                success = self.product_manager.delete_product(self.selected_product_id, self.user.id, force=True)
+                dialog.destroy()
+                
                 if success:
                     self.refresh_product_list()
                     self.clear_product_details()
-                    self.status_label.config(text="Product deleted successfully")
+                    self.status_label.config(text=f"Product '{product.name}' permanently deleted")
                 else:
                     messagebox.showerror("Error", "Failed to delete product")
                     
             except Exception as e:
+                dialog.destroy()
                 messagebox.showerror("Error", f"Failed to delete product: {str(e)}")
+        else:
+            dialog.destroy()
                 
     def adjust_stock(self):
         """Open stock adjustment dialog"""
@@ -533,6 +679,11 @@ Dates:
             messagebox.showerror("Invalid Input", "Please enter a valid quantity number")
         except Exception as e:
             messagebox.showerror("Error", f"Stock adjustment failed: {str(e)}")
+    
+    def show_archived_products(self):
+        """Show archived products management window"""
+        ArchiveManagerWindow(self.root, self.user, self.product_manager, parent_callback=self.refresh_product_list)
+
 
 class ProductEditDialog:
     """Dialog for adding/editing products"""
@@ -946,6 +1097,240 @@ class StockAdjustmentDialog:
         """Cancel dialog"""
         self.result = False
         self.dialog.destroy()
+
+
+class ArchiveManagerWindow:
+    """Window for managing archived products"""
+    
+    def __init__(self, parent, user, product_manager, parent_callback=None):
+        self.parent = parent
+        self.user = user
+        self.product_manager = product_manager
+        self.parent_callback = parent_callback
+        
+        self.root = tk.Toplevel(parent)
+        self.setup_window()
+        self.create_widgets()
+        self.load_archived_products()
+    
+    def setup_window(self):
+        """Configure window properties"""
+        self.root.title("Archived Products - Tembie's Spaza Shop")
+        self.root.geometry("800x600")
+        self.root.resizable(True, True)
+        self.root.grab_set()
+        
+        # Center window
+        self.root.transient(self.parent)
+        self.root.update_idletasks()
+        x = (self.root.winfo_screenwidth() // 2) - (self.root.winfo_width() // 2)
+        y = (self.root.winfo_screenheight() // 2) - (self.root.winfo_height() // 2)
+        self.root.geometry(f"+{x}+{y}")
+    
+    def create_widgets(self):
+        """Create UI widgets"""
+        main_frame = ttk.Frame(self.root, padding="10")
+        main_frame.pack(fill=tk.BOTH, expand=True)
+        main_frame.columnconfigure(0, weight=1)
+        main_frame.rowconfigure(1, weight=1)
+        
+        # Header
+        header_frame = ttk.Frame(main_frame)
+        header_frame.grid(row=0, column=0, sticky="ew", pady=(0, 10))
+        header_frame.columnconfigure(0, weight=1)
+        
+        title_label = ttk.Label(header_frame, text="📁 Archived Products", 
+                               font=('Arial', 14, 'bold'))
+        title_label.grid(row=0, column=0, sticky="w")
+        
+        info_label = ttk.Label(header_frame, 
+                              text="Products that have been archived to preserve historical data",
+                              font=('Arial', 10))
+        info_label.grid(row=1, column=0, sticky="w")
+        
+        # Action buttons
+        action_frame = ttk.Frame(header_frame)
+        action_frame.grid(row=2, column=0, sticky="w", pady=(10, 0))
+        
+        ttk.Button(action_frame, text="🔄 Restore Product", 
+                  command=self.restore_product).pack(side=tk.LEFT, padx=(0, 5))
+        ttk.Button(action_frame, text="🗑️ Permanently Delete", 
+                  command=self.permanently_delete).pack(side=tk.LEFT, padx=(0, 5))
+        ttk.Button(action_frame, text="🔄 Refresh", 
+                  command=self.load_archived_products).pack(side=tk.LEFT, padx=(0, 5))
+        
+        # Archived products list
+        list_frame = ttk.LabelFrame(main_frame, text="Archived Products", padding="10")
+        list_frame.grid(row=1, column=0, sticky="nsew")
+        list_frame.columnconfigure(0, weight=1)
+        list_frame.rowconfigure(0, weight=1)
+        
+        # Treeview
+        columns = ("ID", "Name", "Category", "Last Stock", "Archived Date")
+        self.archive_tree = ttk.Treeview(list_frame, columns=columns, show="headings")
+        
+        # Configure columns
+        self.archive_tree.heading("ID", text="ID")
+        self.archive_tree.heading("Name", text="Product Name")
+        self.archive_tree.heading("Category", text="Category")
+        self.archive_tree.heading("Last Stock", text="Last Stock")
+        self.archive_tree.heading("Archived Date", text="Archived Date")
+        
+        self.archive_tree.column("ID", width=50, minwidth=50)
+        self.archive_tree.column("Name", width=200, minwidth=150)
+        self.archive_tree.column("Category", width=100, minwidth=80)
+        self.archive_tree.column("Last Stock", width=80, minwidth=60)
+        self.archive_tree.column("Archived Date", width=150, minwidth=120)
+        
+        # Scrollbars
+        v_scrollbar = ttk.Scrollbar(list_frame, orient="vertical", command=self.archive_tree.yview)
+        h_scrollbar = ttk.Scrollbar(list_frame, orient="horizontal", command=self.archive_tree.xview)
+        self.archive_tree.configure(yscrollcommand=v_scrollbar.set, xscrollcommand=h_scrollbar.set)
+        
+        # Grid widgets
+        self.archive_tree.grid(row=0, column=0, sticky="nsew")
+        v_scrollbar.grid(row=0, column=1, sticky="ns")
+        h_scrollbar.grid(row=1, column=0, sticky="ew")
+        
+        # Bind events
+        self.archive_tree.bind('<<TreeviewSelect>>', self.on_archive_select)
+        
+        # Bottom frame with close button
+        bottom_frame = ttk.Frame(main_frame)
+        bottom_frame.grid(row=2, column=0, sticky="ew", pady=(10, 0))
+        
+        ttk.Button(bottom_frame, text="Close", 
+                  command=self.root.destroy).pack(side=tk.RIGHT)
+        
+        # Status label
+        self.status_label = ttk.Label(bottom_frame, text="Ready", foreground="green")
+        self.status_label.pack(side=tk.LEFT)
+    
+    def load_archived_products(self):
+        """Load archived products into the list"""
+        try:
+            archived_products = self.product_manager.get_archived_products()
+            
+            # Clear existing items
+            for item in self.archive_tree.get_children():
+                self.archive_tree.delete(item)
+            
+            if not archived_products:
+                self.status_label.config(text="No archived products found", foreground="blue")
+                return
+            
+            # Add products to tree
+            for product in archived_products:
+                archived_date = product.updated_at.strftime("%Y-%m-%d %H:%M") if product.updated_at else "Unknown"
+                
+                self.archive_tree.insert("", "end", values=(
+                    product.id,
+                    product.name,
+                    product.category,
+                    product.current_stock,
+                    archived_date
+                ))
+            
+            self.status_label.config(text=f"Found {len(archived_products)} archived products", foreground="green")
+            
+        except Exception as e:
+            self.status_label.config(text=f"Error loading archived products: {str(e)}", foreground="red")
+    
+    def on_archive_select(self, event=None):
+        """Handle archive selection"""
+        pass  # Could show details if needed
+    
+    def get_selected_product_id(self):
+        """Get the selected product ID"""
+        selection = self.archive_tree.selection()
+        if not selection:
+            return None
+        
+        item = self.archive_tree.item(selection[0])
+        return item['values'][0] if item['values'] else None
+    
+    def restore_product(self):
+        """Restore selected archived product"""
+        product_id = self.get_selected_product_id()
+        if not product_id:
+            messagebox.showwarning("No Selection", "Please select a product to restore")
+            return
+        
+        # Get product info for confirmation
+        try:
+            # Get product from all products including archived
+            all_products = self.product_manager.get_all_products(include_archived=True)
+            product = next((p for p in all_products if p.id == product_id), None)
+            
+            if not product:
+                messagebox.showerror("Error", "Product not found")
+                return
+            
+            if messagebox.askyesno("Confirm Restore", 
+                                 f"Restore '{product.name}' to active products?\n\n"
+                                 f"This will make it visible in the main product list again."):
+                
+                success = self.product_manager.restore_product(product_id, self.user.id)
+                
+                if success:
+                    self.load_archived_products()
+                    self.status_label.config(text=f"Product '{product.name}' restored successfully", foreground="green")
+                    
+                    # Refresh parent window if callback provided
+                    if self.parent_callback:
+                        self.parent_callback()
+                        
+                    messagebox.showinfo("Success", f"Product '{product.name}' has been restored to active products.")
+                else:
+                    messagebox.showerror("Error", "Failed to restore product")
+                    
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to restore product: {str(e)}")
+    
+    def permanently_delete(self):
+        """Permanently delete selected archived product"""
+        product_id = self.get_selected_product_id()
+        if not product_id:
+            messagebox.showwarning("No Selection", "Please select a product to delete")
+            return
+        
+        # Get product info for confirmation
+        try:
+            all_products = self.product_manager.get_all_products(include_archived=True)
+            product = next((p for p in all_products if p.id == product_id), None)
+            
+            if not product:
+                messagebox.showerror("Error", "Product not found")
+                return
+            
+            # Check deletion constraints
+            delete_info = self.product_manager.can_delete_product(product_id)
+            
+            warning_msg = f"⚠️ PERMANENTLY DELETE '{product.name}' ⚠️\n\n"
+            warning_msg += f"This will PERMANENTLY remove the product from the database.\n\n"
+            
+            if delete_info['sales_count'] > 0 or delete_info['movements_count'] > 0:
+                warning_msg += f"WARNING: This product has:\n"
+                warning_msg += f"• {delete_info['sales_count']} associated sales\n"
+                warning_msg += f"• {delete_info['movements_count']} stock movements\n\n"
+                warning_msg += f"These records will become orphaned but preserved for historical data.\n\n"
+            
+            warning_msg += f"This action CANNOT be undone!\n\n"
+            warning_msg += f"Are you absolutely sure you want to proceed?"
+            
+            if messagebox.askyesno("Final Warning", warning_msg, icon='warning'):
+                success = self.product_manager.delete_product(product_id, self.user.id, force=True)
+                
+                if success:
+                    self.load_archived_products()
+                    self.status_label.config(text=f"Product '{product.name}' permanently deleted", foreground="orange")
+                    messagebox.showinfo("Deleted", f"Product '{product.name}' has been permanently deleted.")
+                else:
+                    messagebox.showerror("Error", "Failed to delete product")
+                    
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to delete product: {str(e)}")
+
 
 def main():
     """Main entry point for product management"""

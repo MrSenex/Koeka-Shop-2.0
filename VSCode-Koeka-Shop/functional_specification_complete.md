@@ -1,3 +1,6 @@
+NEVER USE ANY EMOJIS
+
+
 # Point of Sale System - Complete Functional Specification
 # Rural Spaza Shop Solution for Tembie
 

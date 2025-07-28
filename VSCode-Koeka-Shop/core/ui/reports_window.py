@@ -45,8 +45,18 @@ class ReportsWindow:
         self.db = get_db_manager()
         self.daily_reports = DailyReportsManager()
         
+        # Initialize status_label as None for safety
+        self.status_label = None
+        
         self.setup_window()
-        self.create_widgets()
+        try:
+            self.create_widgets()
+        except Exception as e:
+            print(f"Error creating widgets: {e}")
+            # Create a minimal status label if widget creation fails
+            if not self.status_label:
+                self.status_label = ttk.Label(self.root, text="Error initializing interface")
+                self.status_label.pack()
         
     def setup_window(self):
         """Configure window properties"""
@@ -319,6 +329,16 @@ class ReportsWindow:
         
         time_label = ttk.Label(status_frame, text=datetime.now().strftime("%Y-%m-%d %H:%M"))
         time_label.grid(row=0, column=1, sticky="e")
+    
+    def update_status(self, message):
+        """Safely update status label"""
+        if hasattr(self, 'status_label') and self.status_label:
+            try:
+                self.update_status(message)
+            except Exception:
+                print(f"Status: {message}")
+        else:
+            print(f"Status: {message}")
         
     def generate_daily_report(self):
         """Generate daily report"""
@@ -337,14 +357,14 @@ class ReportsWindow:
             # Display report
             self.daily_report_text.delete(1.0, tk.END)
             self.daily_report_text.insert(1.0, full_report)
-            
-            self.status_label.config(text=f"Daily report generated for {report_date}")
+
+            self.update_status(f"Daily report generated for {report_date}")
             
         except ValueError:
             messagebox.showerror("Error", "Please enter a valid date (YYYY-MM-DD)")
         except Exception as e:
             messagebox.showerror("Error", f"Failed to generate daily report: {str(e)}")
-            self.status_label.config(text="Failed to generate daily report")
+            self.update_status("Failed to generate daily report")
             
     def generate_monthly_report(self):
         """Generate monthly report"""
@@ -359,11 +379,11 @@ class ReportsWindow:
             self.monthly_report_text.delete(1.0, tk.END)
             self.monthly_report_text.insert(1.0, report)
             
-            self.status_label.config(text=f"Monthly report generated for {year}-{month:02d}")
+            self.update_status(f"Monthly report generated for {year}-{month:02d}")
             
         except Exception as e:
             messagebox.showerror("Error", f"Failed to generate monthly report: {str(e)}")
-            self.status_label.config(text="Failed to generate monthly report")
+            self.update_status("Failed to generate monthly report")
             
     def generate_monthly_report_content(self, year, month, report_type):
         """Generate monthly report content"""
@@ -643,11 +663,11 @@ Report generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
             self.analytics_text.delete(1.0, tk.END)
             self.analytics_text.insert(1.0, analytics_report)
             
-            self.status_label.config(text=f"Analytics generated for {period_name}")
+            self.update_status(f"Analytics generated for {period_name}")
             
         except Exception as e:
             messagebox.showerror("Error", f"Failed to generate analytics: {str(e)}")
-            self.status_label.config(text="Failed to generate analytics")
+            self.update_status("Failed to generate analytics")
             
     def generate_analytics_content(self, start_date, end_date, period_name):
         """Generate analytics content"""
@@ -815,10 +835,10 @@ Expected Closing:   R{today_summary['expected_closing']:>10.2f}
             status_color = "green" if today_status['day_started'] else "red"
             self.cash_status_label.config(text=status_text, foreground=status_color)
             
-            self.status_label.config(text="Cash management refreshed")
+            self.update_status("Cash management refreshed")
             
         except Exception as e:
-            self.status_label.config(text=f"Error refreshing cash data: {str(e)}")
+            self.update_status(f"Error refreshing cash data: {str(e)}")
             
     def start_day_dialog(self):
         """Dialog to start the business day"""
@@ -872,7 +892,7 @@ Expected Closing:   R{today_summary['expected_closing']:>10.2f}
             if file_path:
                 with open(file_path, 'w', encoding='utf-8') as f:
                     f.write(content)
-                self.status_label.config(text=f"Report exported to {file_path}")
+                self.update_status(f"Report exported to {file_path}")
                 
         except Exception as e:
             messagebox.showerror("Error", f"Failed to export report: {str(e)}")
@@ -895,7 +915,7 @@ Expected Closing:   R{today_summary['expected_closing']:>10.2f}
             if file_path:
                 with open(file_path, 'w', encoding='utf-8') as f:
                     f.write(content)
-                self.status_label.config(text=f"Report exported to {file_path}")
+                self.update_status(f"Report exported to {file_path}")
                 
         except Exception as e:
             messagebox.showerror("Error", f"Failed to export report: {str(e)}")
@@ -918,7 +938,7 @@ Expected Closing:   R{today_summary['expected_closing']:>10.2f}
             if file_path:
                 with open(file_path, 'w', encoding='utf-8') as f:
                     f.write(content)
-                self.status_label.config(text=f"Analytics exported to {file_path}")
+                self.update_status(f"Analytics exported to {file_path}")
                 
         except Exception as e:
             messagebox.showerror("Error", f"Failed to export analytics: {str(e)}")

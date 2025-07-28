@@ -115,11 +115,14 @@ class ProductManager:
         
         return [self._row_to_product(row) for row in results]
     
-    def get_all_products(self) -> List[Product]:
+    def get_all_products(self, include_archived: bool = False) -> List[Product]:
         """Get all products"""
-        query = "SELECT * FROM products ORDER BY name"
-        results = self.db.execute_query(query)
+        if include_archived:
+            query = "SELECT * FROM products ORDER BY name"
+        else:
+            query = "SELECT * FROM products WHERE (archived IS NULL OR archived = 0) ORDER BY name"
         
+        results = self.db.execute_query(query)
         return [self._row_to_product(row) for row in results]
     
     def get_low_stock_products(self) -> List[Product]:
@@ -238,6 +241,162 @@ class ProductManager:
         results = self.db.execute_query(query, params)
         return [dict(row) for row in results]
     
+    def delete_product(self, product_id: int, user_id: int, force: bool = False) -> bool:
+        """
+        Delete a product from the system
+        
+        Args:
+            product_id: ID of the product to delete
+            user_id: ID of the user performing the deletion
+            force: If True, force delete even if there are associated records
+        
+        Returns:
+            bool: True if deletion was successful, False otherwise
+        
+        Raises:
+            ValueError: If product has associated sales/movements and force=False
+        """
+        # Check if product exists
+        product = self.get_product_by_id(product_id)
+        if not product:
+            raise ValueError("Product not found")
+        
+        # Check for associated sales
+        sales_count_query = "SELECT COUNT(*) as count FROM sale_items WHERE product_id = ?"
+        sales_result = self.db.execute_query(sales_count_query, (product_id,))
+        sales_count = sales_result[0]['count'] if sales_result else 0
+        
+        # Check for stock movements
+        movements_count_query = "SELECT COUNT(*) as count FROM stock_movements WHERE product_id = ?"
+        movements_result = self.db.execute_query(movements_count_query, (product_id,))
+        movements_count = movements_result[0]['count'] if movements_result else 0
+        
+        if (sales_count > 0 or movements_count > 0) and not force:
+            raise ValueError(
+                f"Cannot delete product '{product.name}'. "
+                f"It has {sales_count} associated sales and {movements_count} stock movements. "
+                f"Use force=True to delete anyway or consider archiving instead."
+            )
+        
+        try:
+            # If forcing deletion with associated records, we need to handle them
+            if force and (sales_count > 0 or movements_count > 0):
+                # Log the deletion for audit purposes
+                self._log_stock_movement(
+                    product_id, 'deletion', -product.current_stock,
+                    product.current_stock, 0, user_id,
+                    f"Product deleted (force): had {sales_count} sales, {movements_count} movements"
+                )
+                
+                # Note: We don't delete sale_items or stock_movements to preserve historical data
+                # They will reference a non-existent product_id, but this maintains data integrity
+                # for historical reports
+            
+            # Delete the product
+            delete_query = "DELETE FROM products WHERE id = ?"
+            rows_affected = self.db.execute_update(delete_query, (product_id,))
+            
+            return rows_affected > 0
+            
+        except Exception as e:
+            raise ValueError(f"Failed to delete product: {str(e)}")
+    
+    def archive_product(self, product_id: int, user_id: int) -> bool:
+        """
+        Archive a product instead of deleting it (soft delete)
+        This is safer for products with sales history
+        """
+        # Add an 'archived' column if it doesn't exist
+        try:
+            self.db.execute_update("ALTER TABLE products ADD COLUMN archived BOOLEAN DEFAULT 0", ())
+        except:
+            # Column might already exist
+            pass
+        
+        # Archive the product
+        archive_query = """
+            UPDATE products 
+            SET archived = 1, updated_at = CURRENT_TIMESTAMP 
+            WHERE id = ?
+        """
+        rows_affected = self.db.execute_update(archive_query, (product_id,))
+        
+        if rows_affected > 0:
+            # Log the archival
+            product = self.get_product_by_id(product_id)
+            if product:
+                self._log_stock_movement(
+                    product_id, 'adjustment', -product.current_stock,
+                    product.current_stock, 0, user_id,
+                    "Product archived - stock cleared"
+                )
+                
+                # Clear stock when archiving
+                self.db.execute_update(
+                    "UPDATE products SET current_stock = 0, updated_at = CURRENT_TIMESTAMP WHERE id = ?",
+                    (product_id,)
+                )
+        
+        return rows_affected > 0
+    
+    def get_archived_products(self) -> List[Product]:
+        """Get all archived products"""
+        query = "SELECT * FROM products WHERE archived = 1 ORDER BY name"
+        try:
+            results = self.db.execute_query(query)
+            return [self._row_to_product(row) for row in results]
+        except:
+            # If archived column doesn't exist, return empty list
+            return []
+    
+    def restore_product(self, product_id: int, user_id: int) -> bool:
+        """Restore an archived product"""
+        restore_query = """
+            UPDATE products 
+            SET archived = 0, updated_at = CURRENT_TIMESTAMP 
+            WHERE id = ? AND archived = 1
+        """
+        rows_affected = self.db.execute_update(restore_query, (product_id,))
+        
+        if rows_affected > 0:
+            self._log_stock_movement(
+                product_id, 'adjustment', 0, 0, 0, user_id,
+                "Product restored from archive"
+            )
+        
+        return rows_affected > 0
+    
+    def can_delete_product(self, product_id: int) -> Dict[str, Any]:
+        """
+        Check if a product can be safely deleted
+        
+        Returns:
+            dict: Contains 'can_delete' boolean and details about constraints
+        """
+        product = self.get_product_by_id(product_id)
+        if not product:
+            return {'can_delete': False, 'reason': 'Product not found'}
+        
+        # Check for associated sales
+        sales_count_query = "SELECT COUNT(*) as count FROM sale_items WHERE product_id = ?"
+        sales_result = self.db.execute_query(sales_count_query, (product_id,))
+        sales_count = sales_result[0]['count'] if sales_result else 0
+        
+        # Check for stock movements
+        movements_count_query = "SELECT COUNT(*) as count FROM stock_movements WHERE product_id = ?"
+        movements_result = self.db.execute_query(movements_count_query, (product_id,))
+        movements_count = movements_result[0]['count'] if movements_result else 0
+        
+        can_delete = sales_count == 0 and movements_count == 0
+        
+        return {
+            'can_delete': can_delete,
+            'sales_count': sales_count,
+            'movements_count': movements_count,
+            'current_stock': product.current_stock,
+            'recommendation': 'archive' if not can_delete else 'delete'
+        }
+
     def _row_to_product(self, row) -> Product:
         """Convert database row to Product object"""
         # Helper function to parse datetime with microseconds
