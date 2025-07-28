@@ -10,7 +10,6 @@
 |----------|---------|----------|
 | **[MASTER_INSTALLATION_GUIDE.md](MASTER_INSTALLATION_GUIDE.md)** | Complete installation options guide | **Everyone** |
 | [INSTALLATION_GUIDE.md](INSTALLATION_GUIDE.md) | Technical installation details | Developers |
-| [INSTALLATION_OPTIONS.md](INSTALLATION_OPTIONS.md) | Alternative installation methods | Advanced users |
 | [QUICK_START.md](QUICK_START.md) | Fast getting started guide | New users |
 
 ---
@@ -69,9 +68,6 @@ python app.py
 | File | Purpose |
 |------|---------|
 | `app.py` | Main application entry point |
-| `main.py` | Alternative launcher |
-| `gui.py` | GUI interface |
-| `sales_gui.py` | Sales interface |
 | `demo_cli.py` | Command-line demo |
 
 ---
