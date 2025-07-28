@@ -2,7 +2,7 @@
 
 A comprehensive, zero-cost Point of Sale system designed for rural spaza shops in South Africa. Built with Python and SQLite for maximum compatibility and minimal dependencies.
 
-## 🚀 Quick Start
+##  Quick Start
 
 ### 1. Setup
 ```bash
@@ -25,9 +25,9 @@ python test_core_functionality.py
 python demo_cli.py
 ```
 
-## 📋 Current Implementation Status
+##  Current Implementation Status
 
-### ✅ CORE FEATURES IMPLEMENTED
+###  CORE FEATURES IMPLEMENTED
 - **Database Schema** - Complete SQLite setup with all required tables
 - **Product Management** - CRUD operations, stock tracking, barcode support
 - **Sales Processing** - Multi-item transactions, payment handling, stock reduction
@@ -38,20 +38,20 @@ python demo_cli.py
 - **Data Validation** - Comprehensive input validation and security
 - **Settings Management** - Configurable system parameters
 
-### 🔄 IN DEVELOPMENT
+###  IN DEVELOPMENT
 - **User Management** - Authentication and role-based access
 - **GUI Interface** - Tkinter-based user interface
 - **Daily Cash Management** - Till reconciliation and reporting
 - **Basic Reporting** - Daily and monthly reports
 
-### 📋 PLANNED FEATURES
+###  PLANNED FEATURES
 - **Barcode Scanner Integration**
 - **Backup & Restore System**
 - **Advanced Reporting & Analytics**
 - **Customer Credit Management**
 - **Supplier Management**
 
-## 🏗️ Project Structure
+## ️ Project Structure
 
 ```
 VSCode-Koeka-Shop/
@@ -73,7 +73,7 @@ VSCode-Koeka-Shop/
 └── test_core_functionality.py    # Core system tests
 ```
 
-## 🎯 Key Features
+##  Key Features
 
 ### Sales Processing
 - **Multi-item transactions** with quantity adjustments
@@ -108,7 +108,7 @@ VSCode-Koeka-Shop/
 - **Expiry date tracking** for perishables
 - **Cost and selling price** management
 
-## 💡 Demo Usage
+##  Demo Usage
 
 ### CLI Demo Features
 The `demo_cli.py` provides a full interactive demonstration:
@@ -126,7 +126,7 @@ Run `python main.py` and choose 'y' to create sample products:
 - White Bread 700g (Food)
 - Simba Chips 120g (Sweets)
 
-## 🔧 Technical Details
+##  Technical Details
 
 ### Technology Stack
 - **Python 3.8+** - Main programming language
@@ -149,7 +149,7 @@ Complete schema includes:
 - Audit trail for all changes
 - Password hashing and security
 
-## 📖 Business Requirements
+##  Business Requirements
 
 This system implements the complete functional specification for rural spaza shops:
 
@@ -165,7 +165,7 @@ This system implements the complete functional specification for rural spaza sho
 - **Flexible payment methods** for rural economy
 - **Offline operation** with no internet dependency
 
-## 🎯 Next Development Phase
+##  Next Development Phase
 
 1. **User Authentication** - Login system with role-based access
 2. **Tkinter GUI** - Professional desktop interface
@@ -173,13 +173,13 @@ This system implements the complete functional specification for rural spaza sho
 4. **Reporting System** - Business intelligence and analytics
 5. **Module System** - Plugin architecture for optional features
 
-## 📚 Documentation
+##  Documentation
 
 - **functional_specification_complete.md** - Complete business requirements
 - **Code Documentation** - Inline comments and docstrings
 - **Test Coverage** - Comprehensive test suite
 
-## 🤝 Support
+##  Support
 
 This system is designed for Tembie's spaza shop and similar rural businesses. The modular architecture allows for customization and expansion as the business grows.
 
@@ -189,4 +189,4 @@ This system is designed for Tembie's spaza shop and similar rural businesses. Th
 
 ---
 
-**Built for South African spaza shops - Simple, reliable, and designed to grow with your business. 🏪**
+**Built for South African spaza shops - Simple, reliable, and designed to grow with your business. **

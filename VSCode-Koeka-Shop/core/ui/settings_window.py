@@ -90,11 +90,11 @@ class SettingsWindow:
         header_frame.columnconfigure(1, weight=1)
         
         # Title
-        title_label = ttk.Label(header_frame, text="⚙️ System Settings", style='Header.TLabel')
+        title_label = ttk.Label(header_frame, text="System Settings", style='Header.TLabel')
         title_label.grid(row=0, column=0, sticky="w")
         
         # User info
-        user_info = f"👤 {self.user.full_name} ({self.user.role})"
+        user_info = f"{self.user.full_name} ({self.user.role})"
         user_label = ttk.Label(header_frame, text=user_info)
         user_label.grid(row=0, column=1, sticky="e")
         
@@ -618,7 +618,9 @@ class SettingsWindow:
                     last_login
                 ))
                 
-            self.status_label.config(text=f"Loaded {len(users)} users")
+            # Update status if status bar exists
+            if hasattr(self, 'status_label'):
+                self.status_label.config(text=f"Loaded {len(users)} users")
             
         except Exception as e:
             messagebox.showerror("Error", f"Failed to load users: {str(e)}")
@@ -644,7 +646,9 @@ class SettingsWindow:
                     module_info.description
                 ))
                 
-            self.status_label.config(text=f"Loaded {len(available_modules)} modules")
+            # Update status if status bar exists
+            if hasattr(self, 'status_label'):
+                self.status_label.config(text=f"Loaded {len(available_modules)} modules")
             
         except Exception as e:
             messagebox.showerror("Error", f"Failed to load modules: {str(e)}")

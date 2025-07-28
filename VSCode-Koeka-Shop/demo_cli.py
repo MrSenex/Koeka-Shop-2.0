@@ -44,7 +44,7 @@ class SimplePOSDemo:
     def show_menu(self):
         """Display main menu"""
         print("\n" + "=" * 50)
-        print("🏪 TEMBIE'S SPAZA SHOP - POS DEMO")
+        print(" TEMBIE'S SPAZA SHOP - POS DEMO")
         print("=" * 50)
         print("1. View Products")
         print("2. Add New Product")
@@ -58,7 +58,7 @@ class SimplePOSDemo:
     
     def view_products(self):
         """Display all products"""
-        print("\n📦 PRODUCT CATALOG")
+        print("\n PRODUCT CATALOG")
         print("-" * 80)
         print(f"{'ID':<4} {'Name':<25} {'Barcode':<15} {'Price':<8} {'Stock':<6} {'Category':<12}")
         print("-" * 80)
@@ -70,7 +70,7 @@ class SimplePOSDemo:
             return
         
         for product in products:
-            stock_status = "⚠️ LOW" if product.current_stock <= product.min_stock else "✓"
+            stock_status = "️ LOW" if product.current_stock <= product.min_stock else ""
             print(f"{product.id:<4} {product.name[:24]:<25} {product.barcode or 'N/A':<15} "
                   f"R{product.sell_price:<7.2f} {product.current_stock:<4} {stock_status:<3} {product.category:<12}")
         
@@ -79,13 +79,13 @@ class SimplePOSDemo:
     
     def add_product(self):
         """Add a new product"""
-        print("\n➕ ADD NEW PRODUCT")
+        print("\n ADD NEW PRODUCT")
         print("-" * 30)
         
         try:
             name = input("Product name: ").strip()
             if not name:
-                print("❌ Product name cannot be empty!")
+                print(" Product name cannot be empty!")
                 return
             
             barcode = input("Barcode (optional): ").strip() or None
@@ -93,27 +93,27 @@ class SimplePOSDemo:
             print("Categories: Food, Household, Sweets, Cooldrinks, Other")
             category = input("Category: ").strip()
             if category not in ['Food', 'Household', 'Sweets', 'Cooldrinks', 'Other']:
-                print("❌ Invalid category!")
+                print(" Invalid category!")
                 return
             
             cost_price = float(input("Cost price (R): "))
             if not validate_price(cost_price):
-                print("❌ Invalid cost price!")
+                print(" Invalid cost price!")
                 return
             
             sell_price = float(input("Selling price (R): "))
             if not validate_price(sell_price):
-                print("❌ Invalid selling price!")
+                print(" Invalid selling price!")
                 return
             
             current_stock = int(input("Current stock: "))
             if not validate_stock_quantity(current_stock):
-                print("❌ Invalid stock quantity!")
+                print(" Invalid stock quantity!")
                 return
             
             min_stock = int(input("Minimum stock level: "))
             if not validate_stock_quantity(min_stock):
-                print("❌ Invalid minimum stock!")
+                print(" Invalid minimum stock!")
                 return
             
             product = Product(
@@ -130,16 +130,16 @@ class SimplePOSDemo:
             )
             
             product_id = self.product_manager.create_product(product, self.current_user_id)
-            print(f"✅ Product created with ID: {product_id}")
+            print(f" Product created with ID: {product_id}")
             
         except ValueError as e:
-            print(f"❌ Invalid input: {e}")
+            print(f" Invalid input: {e}")
         except Exception as e:
-            print(f"❌ Error creating product: {e}")
+            print(f" Error creating product: {e}")
     
     def start_sale(self):
         """Start a new sale transaction"""
-        print("\n🛒 NEW SALE")
+        print("\n NEW SALE")
         print("-" * 20)
         
         try:
@@ -171,13 +171,13 @@ class SimplePOSDemo:
                         break
                 elif choice == "0":
                     self.transaction_manager.current_sale = None
-                    print("❌ Sale cancelled")
+                    print(" Sale cancelled")
                     break
                 else:
-                    print("❌ Invalid choice!")
+                    print(" Invalid choice!")
                     
         except Exception as e:
-            print(f"❌ Error in sale: {e}")
+            print(f" Error in sale: {e}")
     
     def _add_item_by_id(self):
         """Add item to sale by product ID"""
@@ -186,12 +186,12 @@ class SimplePOSDemo:
             quantity = int(input("Quantity (default 1): ") or "1")
             
             self.transaction_manager.add_item_to_sale(product_id, quantity)
-            print(f"✅ Added {quantity} item(s)")
+            print(f" Added {quantity} item(s)")
             
         except ValueError:
-            print("❌ Invalid ID or quantity!")
+            print(" Invalid ID or quantity!")
         except Exception as e:
-            print(f"❌ Error: {e}")
+            print(f" Error: {e}")
     
     def _add_item_by_barcode(self):
         """Add item to sale by barcode"""
@@ -200,21 +200,21 @@ class SimplePOSDemo:
             quantity = int(input("Quantity (default 1): ") or "1")
             
             self.transaction_manager.add_item_by_barcode(barcode, quantity)
-            print(f"✅ Added {quantity} item(s)")
+            print(f" Added {quantity} item(s)")
             
         except ValueError:
-            print("❌ Invalid quantity!")
+            print(" Invalid quantity!")
         except Exception as e:
-            print(f"❌ Error: {e}")
+            print(f" Error: {e}")
     
     def _view_current_sale(self):
         """View current sale items"""
         sale = self.transaction_manager.get_current_sale()
         if not sale or not sale.items:
-            print("❌ No items in current sale")
+            print(" No items in current sale")
             return
         
-        print("\n📋 CURRENT SALE")
+        print("\n CURRENT SALE")
         print("-" * 60)
         print(f"{'Item':<25} {'Qty':<4} {'Price':<8} {'Total':<8}")
         print("-" * 60)
@@ -233,17 +233,17 @@ class SimplePOSDemo:
         try:
             product_id = int(input("Product ID to remove: "))
             self.transaction_manager.remove_item_from_sale(product_id)
-            print("✅ Item removed")
+            print(" Item removed")
         except ValueError:
-            print("❌ Invalid product ID!")
+            print(" Invalid product ID!")
         except Exception as e:
-            print(f"❌ Error: {e}")
+            print(f" Error: {e}")
     
     def _complete_sale(self):
         """Complete the current sale"""
         sale = self.transaction_manager.get_current_sale()
         if not sale or not sale.items:
-            print("❌ No items to complete sale")
+            print(" No items to complete sale")
             return False
         
         print(f"\nTotal amount: R{sale.total_amount:.2f}")
@@ -251,7 +251,7 @@ class SimplePOSDemo:
         
         payment_method = input("Payment method: ").strip().lower()
         if payment_method not in ['cash', 'card', 'mixed']:
-            print("❌ Invalid payment method!")
+            print(" Invalid payment method!")
             return False
         
         try:
@@ -266,16 +266,16 @@ class SimplePOSDemo:
                 self.transaction_manager.set_payment_method('mixed', cash_amount, card_amount)
             
             if not self.transaction_manager.validate_payment():
-                print("❌ Insufficient payment!")
+                print(" Insufficient payment!")
                 return False
             
             sale_id = self.transaction_manager.complete_sale()
-            print(f"✅ Sale completed! ID: {sale_id}")
+            print(f" Sale completed! ID: {sale_id}")
             
             # Show receipt
             completed_sale = self.transaction_manager.get_sale_by_id(sale_id)
             if completed_sale:
-                print("\n📄 RECEIPT")
+                print("\n RECEIPT")
                 print("=" * 50)
                 receipt = self.receipt_generator.generate_receipt_text(completed_sale)
                 print(receipt)
@@ -287,15 +287,15 @@ class SimplePOSDemo:
             return True
             
         except ValueError:
-            print("❌ Invalid payment amount!")
+            print(" Invalid payment amount!")
             return False
         except Exception as e:
-            print(f"❌ Error completing sale: {e}")
+            print(f" Error completing sale: {e}")
             return False
     
     def view_sales_history(self):
         """View recent sales"""
-        print("\n📊 SALES HISTORY (Today)")
+        print("\n SALES HISTORY (Today)")
         print("-" * 80)
         
         db = get_db_manager()
@@ -334,16 +334,16 @@ class SimplePOSDemo:
     
     def check_stock_levels(self):
         """Check stock levels and show alerts"""
-        print("\n📦 STOCK LEVEL CHECK")
+        print("\n STOCK LEVEL CHECK")
         print("-" * 60)
         
         low_stock = self.product_manager.get_low_stock_products()
         
         if not low_stock:
-            print("✅ All products have adequate stock!")
+            print(" All products have adequate stock!")
             return
         
-        print("⚠️ LOW STOCK ALERTS:")
+        print("️ LOW STOCK ALERTS:")
         print(f"{'Product':<25} {'Current':<8} {'Minimum':<8} {'Status':<10}")
         print("-" * 60)
         
@@ -352,11 +352,11 @@ class SimplePOSDemo:
             print(f"{product.name[:24]:<25} {product.current_stock:<8} {product.min_stock:<8} {status:<10}")
         
         print("-" * 60)
-        print(f"⚠️ {len(low_stock)} product(s) need restocking!")
+        print(f"️ {len(low_stock)} product(s) need restocking!")
     
     def generate_test_receipt(self):
         """Generate a test receipt for demonstration"""
-        print("\n📄 TEST RECEIPT GENERATION")
+        print("\n TEST RECEIPT GENERATION")
         print("-" * 30)
         
         db = get_db_manager()
@@ -364,23 +364,23 @@ class SimplePOSDemo:
         results = db.execute_query(query)
         
         if not results:
-            print("❌ No sales found. Complete a sale first!")
+            print(" No sales found. Complete a sale first!")
             return
         
         sale = self.transaction_manager.get_sale_by_id(results[0]['id'])
         if sale:
             receipt = self.receipt_generator.generate_receipt_text(sale)
             print("\n" + "=" * 50)
-            print("📄 RECEIPT (Latest Sale)")
+            print(" RECEIPT (Latest Sale)")
             print("=" * 50)
             print(receipt)
             print("=" * 50)
         else:
-            print("❌ Could not load sale data!")
+            print(" Could not load sale data!")
     
     def _offer_sms_receipt(self, sale):
         """Offer to send receipt via SMS"""
-        print("\n📱 SMS RECEIPT OPTION")
+        print("\n SMS RECEIPT OPTION")
         print("-" * 30)
         
         send_sms = input("Send receipt via SMS? (y/n): ").strip().lower()
@@ -388,28 +388,28 @@ class SimplePOSDemo:
             phone = input("Enter customer phone number (e.g., 0821234567): ").strip()
             
             if not phone:
-                print("❌ No phone number entered")
+                print(" No phone number entered")
                 return
             
             try:
                 from core.sales.sms_service import get_sms_service
                 sms_service = get_sms_service()
                 
-                print("📱 Sending SMS receipt...")
+                print(" Sending SMS receipt...")
                 result = sms_service.send_receipt_sms(sale, phone)
                 
                 if result['success']:
-                    print(f"✅ SMS receipt sent successfully to {result.get('phone')}!")
+                    print(f" SMS receipt sent successfully to {result.get('phone')}!")
                     print(f"   Message ID: {result.get('message_id')}")
                 else:
-                    print(f"❌ Failed to send SMS: {result['error']}")
+                    print(f" Failed to send SMS: {result['error']}")
                     
             except Exception as e:
-                print(f"❌ SMS error: {e}")
+                print(f" SMS error: {e}")
     
     def view_sms_history(self):
         """View SMS sending history"""
-        print("\n📱 SMS HISTORY")
+        print("\n SMS HISTORY")
         print("-" * 80)
         
         try:
@@ -426,7 +426,7 @@ class SimplePOSDemo:
             print("-" * 80)
             
             for entry in history:
-                status = "✅ Sent" if entry['success'] else "❌ Failed"
+                status = " Sent" if entry['success'] else " Failed"
                 error = entry['error_message'][:28] + "..." if entry['error_message'] and len(entry['error_message']) > 30 else entry['error_message'] or ""
                 
                 print(f"{entry['sent_at'][:19]:<20} {entry['phone_number']:<15} "
@@ -436,11 +436,11 @@ class SimplePOSDemo:
             print(f"Total SMS attempts: {len(history)}")
             
         except Exception as e:
-            print(f"❌ Error viewing SMS history: {e}")
+            print(f" Error viewing SMS history: {e}")
     
     def run(self):
         """Run the demo"""
-        print("🏪 Welcome to Tembie's Spaza Shop POS Demo!")
+        print(" Welcome to Tembie's Spaza Shop POS Demo!")
         print("This demonstrates the core functionality implemented.")
         
         while True:
@@ -463,16 +463,16 @@ class SimplePOSDemo:
                 elif choice == "7":
                     self.view_sms_history()
                 elif choice == "0":
-                    print("\n👋 Thank you for using Tembie's Spaza Shop POS!")
+                    print("\n Thank you for using Tembie's Spaza Shop POS!")
                     break
                 else:
-                    print("❌ Invalid choice! Please try again.")
+                    print(" Invalid choice! Please try again.")
                     
             except KeyboardInterrupt:
-                print("\n\n👋 Goodbye!")
+                print("\n\n Goodbye!")
                 break
             except Exception as e:
-                print(f"❌ Unexpected error: {e}")
+                print(f" Unexpected error: {e}")
 
 if __name__ == "__main__":
     demo = SimplePOSDemo()

@@ -14,23 +14,23 @@ def check_dependencies():
     """Check if all required components are available"""
     try:
         import tkinter as tk
-        print("✓ Tkinter GUI framework available")
+        print(" Tkinter GUI framework available")
         
         from core.database.connection import get_db_manager
-        print("✓ Database connection available")
+        print(" Database connection available")
         
         from core.products.management import ProductManager
-        print("✓ Product management available")
+        print(" Product management available")
         
         from core.sales.transaction import TransactionManager
-        print("✓ Sales transaction system available")
+        print(" Sales transaction system available")
         
         return True
     except ImportError as e:
-        print(f"✗ Missing dependency: {e}")
+        print(f" Missing dependency: {e}")
         return False
     except Exception as e:
-        print(f"✗ System error: {e}")
+        print(f" System error: {e}")
         return False
 
 def initialize_system():
@@ -41,16 +41,16 @@ def initialize_system():
         
         # Initialize database
         db = get_db_manager()
-        print("✓ Database initialized")
+        print(" Database initialized")
         
         # Load settings
         settings_manager = get_settings_manager()
         settings = settings_manager.get_settings()
-        print(f"✓ Settings loaded for: {settings.shop_name}")
+        print(f" Settings loaded for: {settings.shop_name}")
         
         return True
     except Exception as e:
-        print(f"✗ System initialization failed: {e}")
+        print(f" System initialization failed: {e}")
         return False
 
 def create_demo_data():
@@ -66,7 +66,7 @@ def create_demo_data():
         # Check if we have products
         products = product_manager.get_all_products()
         if products:
-            print(f"✓ Found {len(products)} products in database")
+            print(f" Found {len(products)} products in database")
             return True
         
         print("Creating demo data...")
@@ -78,7 +78,7 @@ def create_demo_data():
                 INSERT INTO users (username, password_hash, role, full_name)
                 VALUES (?, ?, ?, ?)
             """, ("admin", admin_password, "admin", "System Administrator"))
-            print(f"✓ Created admin user (ID: {user_id})")
+            print(f" Created admin user (ID: {user_id})")
         except:
             # User might already exist
             result = db.execute_query("SELECT id FROM users WHERE username = ?", ("admin",))
@@ -106,16 +106,16 @@ def create_demo_data():
                 existing = product_manager.get_product_by_barcode(product.barcode)
                 if not existing:
                     product_id = product_manager.create_product(product, user_id)
-                    print(f"✓ Created product: {product.name} (ID: {product_id})")
+                    print(f" Created product: {product.name} (ID: {product_id})")
                     created_count += 1
             except Exception as e:
                 print(f"• Error creating {product.name}: {e}")
         
-        print(f"✓ Created {created_count} demo products")
+        print(f" Created {created_count} demo products")
         return True
         
     except Exception as e:
-        print(f"✗ Demo data creation failed: {e}")
+        print(f" Demo data creation failed: {e}")
         return False
 
 def launch_gui():
@@ -131,18 +131,18 @@ def launch_gui():
             print("Login cancelled by user")
             return
         
-        print(f"✓ Authenticated: {user.full_name} ({user.role})")
+        print(f" Authenticated: {user.full_name} ({user.role})")
         print("Launching GUI...")
         
         from core.ui.main_window import MainWindow
         
         app = MainWindow(user)
-        print("✓ GUI started successfully")
+        print(" GUI started successfully")
         app.run()
         
     except Exception as e:
         error_msg = f"Failed to start GUI: {str(e)}"
-        print(f"✗ {error_msg}")
+        print(f" {error_msg}")
         
         # Show error dialog if possible
         try:
@@ -158,32 +158,32 @@ def launch_gui():
 def main():
     """Main entry point for GUI launcher"""
     print("=" * 60)
-    print("🏪 TEMBIE'S SPAZA SHOP - GUI LAUNCHER")
+    print(" TEMBIE'S SPAZA SHOP - GUI LAUNCHER")
     print("=" * 60)
     
     # Check dependencies
     if not check_dependencies():
-        print("\n❌ Missing dependencies. Please check your installation.")
+        print("\n Missing dependencies. Please check your installation.")
         input("Press Enter to exit...")
         return
     
     # Initialize system
     if not initialize_system():
-        print("\n❌ System initialization failed.")
+        print("\n System initialization failed.")
         input("Press Enter to exit...")
         return
     
     # Create demo data if needed
     if not create_demo_data():
-        print("\n⚠️ Warning: Demo data creation failed, but GUI will still work.")
+        print("\n️ Warning: Demo data creation failed, but GUI will still work.")
     
-    print("\n🚀 Starting GUI Application...")
+    print("\n Starting GUI Application...")
     print("-" * 60)
     
     # Launch GUI
     launch_gui()
     
-    print("\n👋 GUI application closed.")
+    print("\n GUI application closed.")
 
 if __name__ == "__main__":
     main()

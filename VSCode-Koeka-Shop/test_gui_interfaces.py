@@ -49,13 +49,13 @@ def test_main_dashboard():
             root.withdraw()
             
             app = MainWindow(user=admin_user)
-            print("✓ Main Dashboard loaded successfully")
+            print(" Main Dashboard loaded successfully")
             
             # Don't actually show - just test creation
             root.destroy()
             return True
         else:
-            print("✗ Failed to authenticate admin user")
+            print(" Failed to authenticate admin user")
             return False
             
     except Exception as e:
@@ -80,7 +80,7 @@ def test_product_management():
         root.withdraw()
         
         app = ProductManagementWindow(user=admin_user)
-        print("✓ Product Management loaded successfully")
+        print(" Product Management loaded successfully")
         
         root.destroy()
         return True
@@ -107,7 +107,7 @@ def test_reports_window():
         root.withdraw()
         
         app = ReportsWindow(user=admin_user)
-        print("✓ Reports Window loaded successfully")
+        print(" Reports Window loaded successfully")
         
         root.destroy()
         return True
@@ -134,7 +134,7 @@ def test_settings_window():
         root.withdraw()
         
         app = SettingsWindow(user=admin_user)
-        print("✓ Settings Window loaded successfully")
+        print(" Settings Window loaded successfully")
         
         root.destroy()
         return True
@@ -161,7 +161,7 @@ def test_sales_screen():
         root.withdraw()
         
         app = SalesScreen(user=pos_user)
-        print("✓ Sales Screen loaded successfully")
+        print(" Sales Screen loaded successfully")
         
         root.destroy()
         return True
@@ -173,7 +173,7 @@ def test_sales_screen():
 def main():
     """Run all GUI tests"""
     print("=" * 50)
-    print("🧪 TESTING ALL GUI INTERFACES")
+    print(" TESTING ALL GUI INTERFACES")
     print("=" * 50)
     
     tests = [
@@ -188,41 +188,41 @@ def main():
     results = []
     
     for test_name, test_func in tests:
-        print(f"\n🔍 {test_name}...")
+        print(f"\n {test_name}...")
         try:
             success = test_func()
             results.append((test_name, success))
             if success:
-                print(f"✅ {test_name} - PASSED")
+                print(f" {test_name} - PASSED")
             else:
-                print(f"❌ {test_name} - FAILED")
+                print(f" {test_name} - FAILED")
         except Exception as e:
-            print(f"❌ {test_name} - ERROR: {e}")
+            print(f" {test_name} - ERROR: {e}")
             results.append((test_name, False))
     
     # Summary
     print("\n" + "=" * 50)
-    print("📊 TEST RESULTS SUMMARY")
+    print(" TEST RESULTS SUMMARY")
     print("=" * 50)
     
     passed = sum(1 for _, success in results if success)
     total = len(results)
     
     for test_name, success in results:
-        status = "✅ PASS" if success else "❌ FAIL"
+        status = " PASS" if success else " FAIL"
         print(f"{test_name:.<30} {status}")
     
     print(f"\nOverall: {passed}/{total} tests passed")
     
     if passed == total:
-        print("🎉 ALL TESTS PASSED! GUI interfaces are ready.")
-        print("\n🚀 TO START THE APPLICATION:")
+        print(" ALL TESTS PASSED! GUI interfaces are ready.")
+        print("\n TO START THE APPLICATION:")
         print("   python app.py")
-        print("\n📝 Demo Credentials:")
+        print("\n Demo Credentials:")
         print("   Admin: admin/admin123")
         print("   POS User: demo/demo123")
     else:
-        print(f"⚠️  {total - passed} tests failed. Check errors above.")
+        print(f"️  {total - passed} tests failed. Check errors above.")
     
     print("\n" + "=" * 50)
 

@@ -148,7 +148,7 @@ class SMSService:
         import random
         
         if random.random() < 0.95:  # 95% success rate
-            print(f"\n📱 DEMO SMS SENT TO {phone}")
+            print(f"\n DEMO SMS SENT TO {phone}")
             print("=" * 40)
             print(message)
             print("=" * 40)

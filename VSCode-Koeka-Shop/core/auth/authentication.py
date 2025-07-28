@@ -303,7 +303,7 @@ class LoginDialog:
         main_frame.columnconfigure(1, weight=1)
         
         # Logo/Title
-        title_label = ttk.Label(main_frame, text="🏪 Tembie's Spaza Shop", 
+        title_label = ttk.Label(main_frame, text=" Tembie's Spaza Shop", 
                                font=('Arial', 16, 'bold'))
         title_label.grid(row=0, column=0, columnspan=2, pady=(0, 10))
         
@@ -401,7 +401,7 @@ def ensure_demo_user():
         # Create demo user
         try:
             auth_manager.create_user("demo", "demo123", "Demo User", "admin", 1)
-            print("✓ Demo user created (username: demo, password: demo123)")
+            print(" Demo user created (username: demo, password: demo123)")
         except Exception as e:
             print(f"Warning: Could not create demo user: {e}")
 
@@ -413,7 +413,7 @@ def show_login_dialog(parent=None) -> Optional[User]:
 
 def test_authentication():
     """Test authentication system"""
-    print("🔐 Testing Authentication System")
+    print(" Testing Authentication System")
     print("=" * 40)
     
     ensure_demo_user()
@@ -423,7 +423,7 @@ def test_authentication():
     print("Testing login...")
     if auth_manager.login("demo", "demo123"):
         user = auth_manager.get_current_user()
-        print(f"✓ Login successful: {user.full_name} ({user.role})")
+        print(f" Login successful: {user.full_name} ({user.role})")
         
         # Test permissions
         print("Testing permissions...")
@@ -440,7 +440,7 @@ def test_authentication():
         print(f"  After logout: {auth_manager.is_logged_in()}")
         
     else:
-        print("✗ Login failed")
+        print(" Login failed")
 
 if __name__ == "__main__":
     test_authentication()

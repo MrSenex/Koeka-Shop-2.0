@@ -53,7 +53,7 @@ class LoginScreen:
         
         # Shop logo/header
         settings = self.settings_manager.get_settings()
-        title_label = ttk.Label(main_frame, text="🏪", font=('Arial', 52))
+        title_label = ttk.Label(main_frame, text="", font=('Arial', 52))
         title_label.pack(pady=(0, 15))
         
         shop_label = ttk.Label(main_frame, text=settings.shop_name, style='Title.TLabel')
@@ -161,10 +161,10 @@ def initialize_demo_users():
         # Create demo user if not exists  
         ensure_demo_user()
         
-        print("✓ Demo users initialized")
+        print(" Demo users initialized")
         return True
     except Exception as e:
-        print(f"✗ Failed to initialize demo users: {e}")
+        print(f" Failed to initialize demo users: {e}")
         return False
 
 def check_system_requirements():
@@ -183,29 +183,29 @@ def check_system_requirements():
         missing_tables = [table for table in required_tables if table not in tables]
         
         if missing_tables:
-            print(f"✗ Missing database tables: {missing_tables}")
+            print(f" Missing database tables: {missing_tables}")
             return False
             
-        print("✓ Database system ready")
+        print(" Database system ready")
         return True
         
     except Exception as e:
-        print(f"✗ System check failed: {e}")
+        print(f" System check failed: {e}")
         return False
 
 def main():
     """Main application entry point with proper authentication flow"""
-    print("🏪 Starting Tembie's Spaza Shop POS System...")
+    print(" Starting Tembie's Spaza Shop POS System...")
     
     # Check system requirements
     if not check_system_requirements():
-        print("❌ System requirements not met. Please run 'python main.py' first to initialize.")
+        print(" System requirements not met. Please run 'python main.py' first to initialize.")
         input("Press Enter to exit...")
         return
     
     # Initialize demo users
     if not initialize_demo_users():
-        print("⚠️ Warning: Demo users could not be created. Manual user creation may be required.")
+        print("️ Warning: Demo users could not be created. Manual user creation may be required.")
     
     try:
         # Start login screen
@@ -213,9 +213,9 @@ def main():
         login_app.run()
         
     except KeyboardInterrupt:
-        print("\n👋 Application closed by user")
+        print("\n Application closed by user")
     except Exception as e:
-        print(f"❌ Application error: {e}")
+        print(f" Application error: {e}")
         messagebox.showerror("System Error", 
                            f"Failed to start application: {str(e)}\n\n"
                            f"Please check the console for more details.")

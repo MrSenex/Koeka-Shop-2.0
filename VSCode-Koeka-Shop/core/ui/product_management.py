@@ -82,11 +82,11 @@ class ProductManagementWindow:
         header_frame.columnconfigure(1, weight=1)
         
         # Title
-        title_label = ttk.Label(header_frame, text="📦 Product Management", style='Header.TLabel')
+        title_label = ttk.Label(header_frame, text=" Product Management", style='Header.TLabel')
         title_label.grid(row=0, column=0, sticky="w")
         
         # User info
-        user_info = f"👤 {self.user.full_name} ({self.user.role})"
+        user_info = f" {self.user.full_name} ({self.user.role})"
         user_label = ttk.Label(header_frame, text=user_info)
         user_label.grid(row=0, column=1, sticky="e")
         
@@ -94,15 +94,15 @@ class ProductManagementWindow:
         actions_frame = ttk.Frame(header_frame)
         actions_frame.grid(row=1, column=0, columnspan=2, sticky="ew", pady=(10, 0))
         
-        ttk.Button(actions_frame, text="➕ Add Product", command=self.add_product, 
+        ttk.Button(actions_frame, text=" Add Product", command=self.add_product, 
                   style='Action.TButton').pack(side=tk.LEFT, padx=(0, 5))
-        ttk.Button(actions_frame, text="✏️ Edit Product", command=self.edit_product, 
+        ttk.Button(actions_frame, text="️ Edit Product", command=self.edit_product, 
                   style='Action.TButton').pack(side=tk.LEFT, padx=(0, 5))
-        ttk.Button(actions_frame, text="🗑️ Delete Product", command=self.delete_product, 
+        ttk.Button(actions_frame, text="️ Delete Product", command=self.delete_product, 
                   style='Action.TButton').pack(side=tk.LEFT, padx=(0, 5))
-        ttk.Button(actions_frame, text="📊 Stock Adjustment", command=self.adjust_stock, 
+        ttk.Button(actions_frame, text=" Stock Adjustment", command=self.adjust_stock, 
                   style='Action.TButton').pack(side=tk.LEFT, padx=(0, 5))
-        ttk.Button(actions_frame, text="🔄 Refresh", command=self.refresh_product_list, 
+        ttk.Button(actions_frame, text=" Refresh", command=self.refresh_product_list, 
                   style='Action.TButton').pack(side=tk.RIGHT)
         
     def create_product_list_panel(self, parent):
@@ -123,7 +123,7 @@ class ProductManagementWindow:
         search_entry.grid(row=0, column=1, sticky="ew", padx=(5, 5))
         search_entry.bind('<KeyRelease>', self.on_search_change)
         
-        ttk.Button(search_frame, text="🔍", command=self.search_products).grid(row=0, column=2)
+        ttk.Button(search_frame, text="", command=self.search_products).grid(row=0, column=2)
         
         # Category filter
         filter_frame = ttk.Frame(list_frame)
