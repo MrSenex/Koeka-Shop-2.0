@@ -1,0 +1,8 @@
+# Core dependencies for Tembie's Spaza Shop POS System
+python-dotenv>=1.0.0
+
+# For future enhancements (commented out for now)
+# pillow>=10.0.0  # For receipt printing and image handling
+# reportlab>=4.0.0  # For PDF receipt generation
+# openpyxl>=3.1.0  # For Excel export functionality
+# requests>=2.31.0  # For future online features
