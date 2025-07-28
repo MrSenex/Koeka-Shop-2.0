@@ -618,7 +618,9 @@ class SettingsWindow:
                     last_login
                 ))
                 
-            self.status_label.config(text=f"Loaded {len(users)} users")
+            # Update status if status bar exists
+            if hasattr(self, 'status_label'):
+                self.status_label.config(text=f"Loaded {len(users)} users")
             
         except Exception as e:
             messagebox.showerror("Error", f"Failed to load users: {str(e)}")
@@ -644,7 +646,9 @@ class SettingsWindow:
                     module_info.description
                 ))
                 
-            self.status_label.config(text=f"Loaded {len(available_modules)} modules")
+            # Update status if status bar exists
+            if hasattr(self, 'status_label'):
+                self.status_label.config(text=f"Loaded {len(available_modules)} modules")
             
         except Exception as e:
             messagebox.showerror("Error", f"Failed to load modules: {str(e)}")
