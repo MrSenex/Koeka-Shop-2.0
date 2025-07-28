@@ -1,10 +1,10 @@
-# 📋 INSTALLATION GUIDE
+#  INSTALLATION GUIDE
 # Tembie's Spaza Shop POS System
 
-## 🎯 Overview
+##  Overview
 This guide will walk you through installing and setting up Tembie's Spaza Shop POS System on your computer. The system is designed to be simple, reliable, and work offline with minimal technical requirements.
 
-## 💻 System Requirements
+##  System Requirements
 
 ### Minimum Requirements
 - **Operating System**: Windows 10/11, Linux, or macOS
@@ -20,7 +20,7 @@ This guide will walk you through installing and setting up Tembie's Spaza Shop P
 - **Optional**: Barcode scanner (can be added later)
 - **Optional**: Receipt printer (thermal printer recommended)
 
-## 🔧 Installation Steps
+##  Installation Steps
 
 ### Step 1: Install Python
 
@@ -82,8 +82,8 @@ python test_core_functionality.py
 
 You should see:
 ```
-✓ Database initialization successful
-✓ All core functionality tests PASSED!
+ Database initialization successful
+ All core functionality tests PASSED!
 ```
 
 ### Step 5: First Time Setup
@@ -97,7 +97,7 @@ python app.py
 - **Admin User**: `admin` / `admin123`
 - **POS User**: `demo` / `demo123`
 
-## 🚀 Quick Start Guide
+##  Quick Start Guide
 
 ### 1. Initial Configuration
 
@@ -143,7 +143,7 @@ python app.py
 3. Reconcile cash (compare expected vs actual)
 4. Generate daily report
 
-## 🛠️ Troubleshooting
+## ️ Troubleshooting
 
 ### Common Issues
 
@@ -176,7 +176,7 @@ python app.py
 3. **Check File Permissions**: Ensure the POS folder is writable
 4. **Update Python**: Use Python 3.9+ for best compatibility
 
-## 🔒 Security Setup
+##  Security Setup
 
 ### User Management
 
@@ -206,7 +206,7 @@ Windows: C:\POS-System\VSCode-Koeka-Shop\spaza_shop.db
 Linux: /path/to/POS-System/VSCode-Koeka-Shop/spaza_shop.db
 ```
 
-## 📱 Hardware Integration
+##  Hardware Integration
 
 ### Barcode Scanner Setup
 
@@ -233,7 +233,7 @@ Linux: /path/to/POS-System/VSCode-Koeka-Shop/spaza_shop.db
 - Customer can photograph with phone
 - Clear, readable format optimized for photos
 
-## 📊 Data Management
+##  Data Management
 
 ### Regular Maintenance
 
@@ -259,7 +259,7 @@ Linux: /path/to/POS-System/VSCode-Koeka-Shop/spaza_shop.db
 - VAT reports available in Reports section
 - Keep monthly backups for SARS compliance
 
-## 🎓 Training Resources
+##  Training Resources
 
 ### New User Training
 
@@ -293,7 +293,7 @@ Linux: /path/to/POS-System/VSCode-Koeka-Shop/spaza_shop.db
 - [ ] Generate daily report
 - [ ] Backup database
 
-## 📞 Support Information
+##  Support Information
 
 ### Self-Help Resources
 - Check error messages carefully
@@ -314,7 +314,7 @@ Linux: /path/to/POS-System/VSCode-Koeka-Shop/spaza_shop.db
 - `modules/` - Optional features (reporting, etc.)
 - `config/` - System settings
 
-## ✅ Installation Verification
+##  Installation Verification
 
 Run these commands to verify your installation:
 
@@ -335,7 +335,7 @@ python app.py
 - Can login with demo credentials
 - Product management opens without errors
 
-## 🎉 You're Ready!
+##  You're Ready!
 
 Your Tembie's Spaza Shop POS System is now installed and ready for use. Start with the admin account to configure your shop settings, add your products, and create user accounts for your staff.
 
@@ -345,7 +345,7 @@ Your Tembie's Spaza Shop POS System is now installed and ready for use. Start wi
 - Use the demo credentials initially, then create proper accounts
 - Keep this guide handy for reference
 
-**Happy selling! 🛒**
+**Happy selling! **
 
 ---
 *For technical issues beyond this guide, check the error messages and try restarting the application. Most issues resolve with a fresh restart.*

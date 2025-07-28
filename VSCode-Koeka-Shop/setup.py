@@ -11,30 +11,30 @@ import platform
 
 def print_header():
     print("=" * 60)
-    print("🏪 TEMBIE'S SPAZA SHOP POS SYSTEM - QUICK SETUP")
+    print("TEMBIE'S SPAZA SHOP POS SYSTEM - QUICK SETUP")
     print("=" * 60)
     print("Setting up your Point of Sale system...")
     print()
 
 def check_python_version():
     """Check if Python version is compatible"""
-    print("📋 Checking Python version...")
+    print("Checking Python version...")
     version = sys.version_info
     if version.major == 3 and version.minor >= 8:
-        print(f"✅ Python {version.major}.{version.minor}.{version.micro} - Compatible")
+        print(f"Python {version.major}.{version.minor}.{version.micro} - Compatible")
         return True
     else:
-        print(f"❌ Python {version.major}.{version.minor}.{version.micro} - Too old")
+        print(f"Python {version.major}.{version.minor}.{version.micro} - Too old")
         print("   Please install Python 3.8 or newer")
         return False
 
 def install_dependencies():
     """Install required Python packages"""
-    print("\n📦 Installing dependencies...")
+    print("\nInstalling dependencies...")
     try:
         # Check if requirements.txt exists
         if not os.path.exists("requirements.txt"):
-            print("⚠️  requirements.txt not found - creating minimal requirements")
+            print("requirements.txt not found - creating minimal requirements")
             with open("requirements.txt", "w") as f:
                 f.write("python-dotenv>=1.0.0\n")
         
@@ -43,49 +43,49 @@ def install_dependencies():
                               capture_output=True, text=True)
         
         if result.returncode == 0:
-            print("✅ Dependencies installed successfully")
+            print("Dependencies installed successfully")
             return True
         else:
-            print(f"❌ Failed to install dependencies: {result.stderr}")
+            print(f"Failed to install dependencies: {result.stderr}")
             return False
     except Exception as e:
-        print(f"❌ Error installing dependencies: {e}")
+        print(f"Error installing dependencies: {e}")
         return False
 
 def test_system():
     """Test core system functionality"""
-    print("\n🧪 Testing system functionality...")
+    print("\nTesting system functionality...")
     try:
         # Test database initialization
         from core.database.connection import get_db_manager
         db = get_db_manager()
-        print("✅ Database connection - OK")
+        print("Database connection - OK")
         
         # Test authentication
         from core.auth.authentication import get_auth_manager
         auth = get_auth_manager()
-        print("✅ Authentication system - OK")
+        print("Authentication system - OK")
         
         # Test transaction engine
         from core.sales.transaction import SalesManager
         sales = SalesManager()
-        print("✅ Sales transaction engine - OK")
+        print("Sales transaction engine - OK")
         
         # Test product management
         from core.products.management import ProductManager
         products = ProductManager()
-        print("✅ Product management - OK")
+        print("Product management - OK")
         
-        print("✅ All core systems operational!")
+        print("All core systems operational!")
         return True
         
     except Exception as e:
-        print(f"❌ System test failed: {e}")
+        print(f"System test failed: {e}")
         return False
 
 def create_sample_data():
     """Create sample products and users for testing"""
-    print("\n📝 Setting up sample data...")
+    print("\nSetting up sample data...")
     try:
         from core.products.management import ProductManager
         from core.auth.authentication import get_auth_manager
@@ -131,18 +131,18 @@ def create_sample_data():
                 # Product might already exist
                 pass
                 
-        print("✅ Sample products added")
+        print("Sample products added")
         return True
         
     except Exception as e:
-        print(f"⚠️  Could not create sample data: {e}")
+        print(f"Could not create sample data: {e}")
         return False
 
 def show_completion_info():
     """Show completion information and next steps"""
-    print("\n🎉 SETUP COMPLETE!")
+    print("\nSETUP COMPLETE!")
     print("=" * 60)
-    print("\n📋 NEXT STEPS:")
+    print("\nNEXT STEPS:")
     print()
     print("1. Start the application:")
     print("   python app.py")
@@ -161,12 +161,12 @@ def show_completion_info():
     print("   - Try CLI demo: python demo_cli.py")
     print("   - Run tests: python test_core_functionality.py")
     print()
-    print("📞 NEED HELP?")
+    print("NEED HELP?")
     print("   - Check error messages")
     print("   - Refer to INSTALLATION_GUIDE.md")
     print("   - Restart the application")
     print()
-    print("🔄 DAILY BACKUP REMINDER:")
+    print("DAILY BACKUP REMINDER:")
     print("   Copy 'spaza_shop.db' file to USB/cloud storage")
     print()
 
@@ -180,12 +180,12 @@ def main():
     
     # Install dependencies
     if not install_dependencies():
-        print("\n❌ Setup failed at dependency installation")
+        print("\nSetup failed at dependency installation")
         sys.exit(1)
     
     # Test system
     if not test_system():
-        print("\n❌ Setup failed at system testing")
+        print("\nSetup failed at system testing")
         sys.exit(1)
     
     # Create sample data

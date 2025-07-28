@@ -90,11 +90,11 @@ class SettingsWindow:
         header_frame.columnconfigure(1, weight=1)
         
         # Title
-        title_label = ttk.Label(header_frame, text="⚙️ System Settings", style='Header.TLabel')
+        title_label = ttk.Label(header_frame, text="System Settings", style='Header.TLabel')
         title_label.grid(row=0, column=0, sticky="w")
         
         # User info
-        user_info = f"👤 {self.user.full_name} ({self.user.role})"
+        user_info = f"{self.user.full_name} ({self.user.role})"
         user_label = ttk.Label(header_frame, text=user_info)
         user_label.grid(row=0, column=1, sticky="e")
         

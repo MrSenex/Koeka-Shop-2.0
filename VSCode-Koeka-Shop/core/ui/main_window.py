@@ -108,7 +108,7 @@ class MainWindow:
         shop_label.grid(row=0, column=0, sticky="w")
         
         # User info
-        user_info = f"👤 {self.current_user.full_name} ({self.current_user.role})"
+        user_info = f" {self.current_user.full_name} ({self.current_user.role})"
         self.user_label = ttk.Label(header_frame, text=user_info, style='Status.TLabel')
         self.user_label.grid(row=1, column=0, sticky="w")
         
@@ -117,7 +117,7 @@ class MainWindow:
         self.time_label.grid(row=0, column=1, sticky="e")
         
         # Logout button
-        ttk.Button(header_frame, text="🚪 Logout", command=self.logout, 
+        ttk.Button(header_frame, text=" Logout", command=self.logout, 
                   style='Small.TButton').grid(row=1, column=1, sticky="e")
         
         # Update time
@@ -136,19 +136,19 @@ class MainWindow:
         
         # Sales - Available to all users
         if auth_manager.can_access_function('sales'):
-            buttons.append(("🛒 New Sale", self.open_sales_screen))
+            buttons.append((" New Sale", self.open_sales_screen))
         
         # Product Management - Admin and Stock Manager only
         if auth_manager.can_access_function('product_management'):
-            buttons.append(("📦 Manage Products", self.open_product_management))
+            buttons.append((" Manage Products", self.open_product_management))
         
         # Reports - Admin only
         if auth_manager.can_access_function('reports'):
-            buttons.append(("📊 View Reports", self.show_reports))
+            buttons.append((" View Reports", self.show_reports))
         
         # Settings - Admin only
         if auth_manager.can_access_function('settings'):
-            buttons.append(("⚙️ Settings", self.open_settings))
+            buttons.append(("️ Settings", self.open_settings))
         
         # Create buttons
         for i, (text, command) in enumerate(buttons):
@@ -249,7 +249,7 @@ class MainWindow:
         sales_scrollbar.grid(row=1, column=1, sticky="ns")
         
         # Refresh button
-        refresh_btn = ttk.Button(activity_frame, text="🔄 Refresh", command=self.update_dashboard)
+        refresh_btn = ttk.Button(activity_frame, text=" Refresh", command=self.update_dashboard)
         refresh_btn.grid(row=2, column=0, pady=(10, 0), sticky="ew")
     
     def create_status_bar(self, parent):
@@ -263,7 +263,7 @@ class MainWindow:
         self.status_label.grid(row=0, column=0, sticky="w")
         
         # Connection status
-        self.connection_label = ttk.Label(status_frame, text="📁 Database: Connected", style='Status.TLabel')
+        self.connection_label = ttk.Label(status_frame, text=" Database: Connected", style='Status.TLabel')
         self.connection_label.grid(row=0, column=1, sticky="e")
     
     def update_time(self):
@@ -356,10 +356,10 @@ class MainWindow:
         self.stock_listbox.delete(0, tk.END)
         
         if not low_stock:
-            self.stock_listbox.insert(tk.END, "✅ All products have adequate stock")
+            self.stock_listbox.insert(tk.END, " All products have adequate stock")
         else:
             for product in low_stock:
-                status = "🔴 OUT" if product.current_stock == 0 else "⚠️ LOW"
+                status = " OUT" if product.current_stock == 0 else "️ LOW"
                 alert = f"{status} {product.name} ({product.current_stock}/{product.min_stock})"
                 self.stock_listbox.insert(tk.END, alert)
     

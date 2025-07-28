@@ -16,10 +16,10 @@ def check_dependencies():
     """Check if required dependencies are available"""
     try:
         import sqlite3
-        print("✓ SQLite3 available")
+        print(" SQLite3 available")
         return True
     except ImportError as e:
-        print(f"✗ Missing dependency: {e}")
+        print(f" Missing dependency: {e}")
         return False
 
 def initialize_system():
@@ -32,22 +32,22 @@ def initialize_system():
         
         # Initialize database
         db = get_db_manager()
-        print("✓ Database initialized")
+        print(" Database initialized")
         
         # Load settings
         settings_manager = get_settings_manager()
         settings = settings_manager.get_settings()
-        print(f"✓ Settings loaded for: {settings.shop_name}")
+        print(f" Settings loaded for: {settings.shop_name}")
         
         return True
     except Exception as e:
-        print(f"✗ System initialization failed: {e}")
+        print(f" System initialization failed: {e}")
         return False
 
 def show_welcome_screen():
     """Display welcome screen with system status"""
     print("=" * 60)
-    print("🏪 TEMBIE'S SPAZA SHOP - POINT OF SALE SYSTEM")
+    print(" TEMBIE'S SPAZA SHOP - POINT OF SALE SYSTEM")
     print("=" * 60)
     print(f"System Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print(f"Database: SQLite (Embedded)")
@@ -56,14 +56,14 @@ def show_welcome_screen():
     print()
     
     print("CORE FEATURES IMPLEMENTED:")
-    print("✓ Database Schema & Connection Management")
-    print("✓ Product Management (CRUD, Stock Tracking)")
-    print("✓ Sales Transaction Processing")
-    print("✓ Receipt Generation (Screen Display)")
-    print("✓ Payment Processing (Cash, Card, Mixed)")
-    print("✓ Stock Movement Audit Trail")
-    print("✓ VAT Calculations")
-    print("✓ Data Validation & Security")
+    print(" Database Schema & Connection Management")
+    print(" Product Management (CRUD, Stock Tracking)")
+    print(" Sales Transaction Processing")
+    print(" Receipt Generation (Screen Display)")
+    print(" Payment Processing (Cash, Card, Mixed)")
+    print(" Stock Movement Audit Trail")
+    print(" VAT Calculations")
+    print(" Data Validation & Security")
     print()
     
     print("NEXT DEVELOPMENT PHASE:")
@@ -101,7 +101,7 @@ def run_demo_mode():
                 INSERT INTO users (username, password_hash, role, full_name)
                 VALUES (?, ?, ?, ?)
             """, ("demo", admin_password, "admin", "Demo User"))
-            print(f"✓ Created demo user (ID: {user_id})")
+            print(f" Created demo user (ID: {user_id})")
         except:
             # User might already exist
             result = db.execute_query("SELECT id FROM users WHERE username = ?", ("demo",))
@@ -124,13 +124,13 @@ def run_demo_mode():
                 existing = product_manager.get_product_by_barcode(product.barcode)
                 if not existing:
                     product_id = product_manager.create_product(product, user_id)
-                    print(f"✓ Created product: {product.name} (ID: {product_id})")
+                    print(f" Created product: {product.name} (ID: {product_id})")
                 else:
                     print(f"• Product already exists: {product.name}")
             except Exception as e:
                 print(f"• Error creating {product.name}: {e}")
         
-        print("✓ Demo data ready!")
+        print(" Demo data ready!")
         print("\nYou can now:")
         print("1. Run test_core_functionality.py to see the system in action")
         print("2. Examine the database file: spaza_shop.db")

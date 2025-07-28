@@ -1,4 +1,4 @@
-"""
+﻿"""
 SMS Receipt Integration Test
 Test the complete SMS receipt functionality in GUI context
 """
@@ -11,7 +11,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 def test_sms_integration():
     """Test SMS functionality integration"""
-    print("🧪 Testing SMS Receipt Integration")
+    print("Testing SMS Receipt Integration")
     print("=" * 50)
     
     try:
@@ -21,7 +21,7 @@ def test_sms_integration():
         from core.sales.transaction import TransactionManager
         from core.products.management import ProductManager
         
-        print("✓ All modules imported successfully")
+        print("All modules imported successfully")
         
         # Initialize services
         sms_service = get_sms_service()
@@ -29,14 +29,14 @@ def test_sms_integration():
         transaction_manager = TransactionManager()
         product_manager = ProductManager()
         
-        print("✓ Services initialized")
+        print(" Services initialized")
         
         # Test SMS configuration
-        print(f"✓ SMS Enabled: {sms_service.is_sms_enabled()}")
-        print(f"✓ SMS Provider: {sms_service.config.get('sms_provider', 'Not configured')}")
+        print(f" SMS Enabled: {sms_service.is_sms_enabled()}")
+        print(f" SMS Provider: {sms_service.config.get('sms_provider', 'Not configured')}")
         
         # Test receipt generator SMS method
-        print("\n🔗 Testing receipt generator SMS integration...")
+        print("\n Testing receipt generator SMS integration...")
         
         # Create a test sale
         sale = transaction_manager.start_new_sale(user_id=1)
@@ -49,30 +49,30 @@ def test_sms_integration():
             sale_id = transaction_manager.complete_sale()
             completed_sale = transaction_manager.get_sale_by_id(sale_id)
             
-            print(f"✓ Test sale created: {completed_sale.transaction_ref}")
+            print(f" Test sale created: {completed_sale.transaction_ref}")
             
             # Test SMS sending through receipt generator
             result = receipt_generator.send_receipt_sms(completed_sale, "+27821234567")
             
             if result['success']:
-                print("✅ SMS sent successfully through receipt generator!")
+                print(" SMS sent successfully through receipt generator!")
                 print(f"   Message ID: {result.get('message_id')}")
             else:
-                print(f"❌ SMS failed: {result['error']}")
+                print(f" SMS failed: {result['error']}")
             
             # Test SMS history
             history = sms_service.get_sms_history(limit=3)
-            print(f"✓ SMS history entries: {len(history)}")
+            print(f" SMS history entries: {len(history)}")
             
         else:
-            print("⚠️ No products available for testing")
+            print("️ No products available for testing")
         
-        print("\n🎉 SMS integration test completed!")
+        print("\n SMS integration test completed!")
         
         # Print SMS usage guide
-        print("\n📋 SMS FUNCTIONALITY GUIDE")
+        print("\n SMS FUNCTIONALITY GUIDE")
         print("=" * 40)
-        print("1. In GUI: Complete a sale, then click '📱 SMS Receipt'")
+        print("1. In GUI: Complete a sale, then click ' SMS Receipt'")
         print("2. Enter customer phone number (0XX XXX XXXX format)")
         print("3. View SMS preview before sending")
         print("4. SMS will be sent via demo provider (printed to console)")
@@ -83,7 +83,7 @@ def test_sms_integration():
         print("- For production: Configure Twilio or Africa's Talking")
         
     except Exception as e:
-        print(f"❌ Integration test failed: {e}")
+        print(f" Integration test failed: {e}")
         import traceback
         traceback.print_exc()
 

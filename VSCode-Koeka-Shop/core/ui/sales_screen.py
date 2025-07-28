@@ -254,7 +254,7 @@ class SalesScreen:
         
         # Receipt instructions
         instructions = ttk.Label(receipt_frame, 
-                               text="📱 Receipt optimized for mobile photography\n"
+                               text=" Receipt optimized for mobile photography\n"
                                     "Customer can photograph this screen as proof of purchase",
                                justify=tk.CENTER, font=('Arial', 10))
         instructions.grid(row=0, column=0, pady=(0, 10))
@@ -285,11 +285,11 @@ class SalesScreen:
         receipt_actions = ttk.Frame(receipt_frame)
         receipt_actions.grid(row=2, column=0, sticky="ew", pady=(10, 0))
         
-        ttk.Button(receipt_actions, text="🖨️ Print Receipt", 
+        ttk.Button(receipt_actions, text="️ Print Receipt", 
                   command=self.print_receipt, style='Small.TButton').pack(side=tk.LEFT, padx=(0, 5))
-        ttk.Button(receipt_actions, text="📧 Email Receipt", 
+        ttk.Button(receipt_actions, text=" Email Receipt", 
                   command=self.email_receipt, style='Small.TButton').pack(side=tk.LEFT, padx=(0, 5))
-        ttk.Button(receipt_actions, text="📱 SMS Receipt", 
+        ttk.Button(receipt_actions, text=" SMS Receipt", 
                   command=self.sms_receipt, style='Small.TButton').pack(side=tk.LEFT)
         
         # Initialize with placeholder
@@ -676,7 +676,7 @@ class SMSReceiptDialog:
         self.dialog.rowconfigure(0, weight=1)
         
         # Header
-        header_label = ttk.Label(main_frame, text="📱 Send Receipt via SMS", 
+        header_label = ttk.Label(main_frame, text=" Send Receipt via SMS", 
                                 font=('Arial', 14, 'bold'))
         header_label.grid(row=0, column=0, columnspan=2, pady=(0, 20))
         
@@ -729,7 +729,7 @@ class SMSReceiptDialog:
         button_frame = ttk.Frame(main_frame)
         button_frame.grid(row=4, column=0, columnspan=2, sticky="ew", pady=(10, 0))
         
-        ttk.Button(button_frame, text="📱 Send SMS", 
+        ttk.Button(button_frame, text=" Send SMS", 
                   command=self.send_sms, style='Large.TButton').pack(side=tk.LEFT, padx=(0, 10))
         ttk.Button(button_frame, text="Cancel", 
                   command=self.dialog.destroy).pack(side=tk.RIGHT)
@@ -763,7 +763,7 @@ class SMSReceiptDialog:
         y = self.dialog.winfo_y() + (self.dialog.winfo_height() // 2) - 50
         progress_window.geometry(f"300x100+{x}+{y}")
         
-        progress_label = ttk.Label(progress_window, text="📱 Sending SMS receipt...", 
+        progress_label = ttk.Label(progress_window, text=" Sending SMS receipt...", 
                                   font=('Arial', 12))
         progress_label.pack(expand=True)
         
@@ -783,12 +783,12 @@ class SMSReceiptDialog:
             
             if result['success']:
                 messagebox.showinfo("SMS Sent", 
-                                   f"✅ Receipt sent successfully to {result.get('phone', phone)}!\n\n"
+                                   f" Receipt sent successfully to {result.get('phone', phone)}!\n\n"
                                    f"Message ID: {result.get('message_id', 'N/A')}")
                 self.dialog.destroy()
             else:
                 messagebox.showerror("SMS Failed", 
-                                    f"❌ Failed to send SMS:\n{result['error']}")
+                                    f" Failed to send SMS:\n{result['error']}")
         
         except Exception as e:
             progress_window.destroy()

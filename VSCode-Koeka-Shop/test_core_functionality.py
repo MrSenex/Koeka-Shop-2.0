@@ -30,15 +30,15 @@ def test_database_initialization():
         
         for table in expected_tables:
             if table in tables:
-                print(f"✓ Table '{table}' exists")
+                print(f" Table '{table}' exists")
             else:
-                print(f"✗ Table '{table}' missing")
+                print(f" Table '{table}' missing")
                 return False
         
-        print("✓ Database initialization successful")
+        print(" Database initialization successful")
         return True
     except Exception as e:
-        print(f"✗ Database initialization failed: {e}")
+        print(f" Database initialization failed: {e}")
         return False
 
 def test_product_management():
@@ -79,34 +79,34 @@ def test_product_management():
         )
         
         product_id = product_manager.create_product(test_product, admin_id)
-        print(f"✓ Created product with ID: {product_id}")
+        print(f" Created product with ID: {product_id}")
         
         # Test product retrieval
         retrieved_product = product_manager.get_product_by_id(product_id)
         if retrieved_product and retrieved_product.name == "Test Cola 330ml":
-            print("✓ Product retrieval successful")
+            print(" Product retrieval successful")
         else:
-            print("✗ Product retrieval failed")
+            print(" Product retrieval failed")
             return False
         
         # Test barcode search
         barcode_product = product_manager.get_product_by_barcode(unique_barcode)
         if barcode_product and barcode_product.id == product_id:
-            print("✓ Barcode search successful")
+            print(" Barcode search successful")
         else:
-            print("✗ Barcode search failed")
+            print(" Barcode search failed")
             return False
         
         # Test stock adjustment
         if product_manager.adjust_stock(product_id, -5, "adjustment", admin_id, "Test adjustment"):
-            print("✓ Stock adjustment successful")
+            print(" Stock adjustment successful")
         else:
-            print("✗ Stock adjustment failed")
+            print(" Stock adjustment failed")
             return False
         
         return True
     except Exception as e:
-        print(f"✗ Product management test failed: {e}")
+        print(f" Product management test failed: {e}")
         return False
 
 def test_sales_processing():
@@ -123,7 +123,7 @@ def test_sales_processing():
         product_manager = ProductManager()
         products = product_manager.search_products("Test Cola")
         if not products:
-            print("✗ No test product found for sales test")
+            print(" No test product found for sales test")
             return False
         
         test_product = products[0]
@@ -132,26 +132,26 @@ def test_sales_processing():
         transaction_manager = TransactionManager()
         sale = transaction_manager.start_new_sale(admin_id)
         
-        print(f"✓ Started new sale: {sale.transaction_ref}")
+        print(f" Started new sale: {sale.transaction_ref}")
         
         # Add item to sale
         if transaction_manager.add_item_to_sale(test_product.id, 2):
-            print("✓ Added item to sale")
+            print(" Added item to sale")
         else:
-            print("✗ Failed to add item to sale")
+            print(" Failed to add item to sale")
             return False
         
         # Set payment method
         total_amount = sale.total_amount
         if transaction_manager.set_payment_method("cash", total_amount + 2.00):
-            print(f"✓ Set payment method (Total: R{total_amount:.2f})")
+            print(f" Set payment method (Total: R{total_amount:.2f})")
         else:
-            print("✗ Failed to set payment method")
+            print(" Failed to set payment method")
             return False
         
         # Complete sale
         sale_id = transaction_manager.complete_sale()
-        print(f"✓ Completed sale with ID: {sale_id}")
+        print(f" Completed sale with ID: {sale_id}")
         
         # Test receipt generation
         receipt_generator = ReceiptGenerator()
@@ -159,17 +159,17 @@ def test_sales_processing():
         
         if completed_sale:
             receipt_text = receipt_generator.generate_receipt_text(completed_sale)
-            print("✓ Generated receipt text")
+            print(" Generated receipt text")
             print("\n--- RECEIPT PREVIEW ---")
             print(receipt_text[:200] + "..." if len(receipt_text) > 200 else receipt_text)
             print("--- END RECEIPT ---\n")
         else:
-            print("✗ Failed to generate receipt")
+            print(" Failed to generate receipt")
             return False
         
         return True
     except Exception as e:
-        print(f"✗ Sales processing test failed: {e}")
+        print(f" Sales processing test failed: {e}")
         return False
 
 def main():
@@ -195,13 +195,13 @@ def main():
     print(f"TEST RESULTS: {passed}/{total} tests passed")
     
     if passed == total:
-        print("🎉 All core functionality tests PASSED!")
+        print(" All core functionality tests PASSED!")
         print("\nNext steps:")
         print("1. Run the application: python main.py")
         print("2. Build the GUI interface")
         print("3. Add user management features")
     else:
-        print("❌ Some tests FAILED. Check the errors above.")
+        print(" Some tests FAILED. Check the errors above.")
     
     print("=" * 50)
 

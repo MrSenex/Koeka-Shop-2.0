@@ -98,11 +98,11 @@ class ReportsWindow:
         header_frame.columnconfigure(1, weight=1)
         
         # Title
-        title_label = ttk.Label(header_frame, text="📊 Reports & Analytics", style='Header.TLabel')
+        title_label = ttk.Label(header_frame, text=" Reports & Analytics", style='Header.TLabel')
         title_label.grid(row=0, column=0, sticky="w")
         
         # User info
-        user_info = f"👤 {self.user.full_name} ({self.user.role})"
+        user_info = f" {self.user.full_name} ({self.user.role})"
         user_label = ttk.Label(header_frame, text=user_info)
         user_label.grid(row=0, column=1, sticky="e")
         
@@ -794,7 +794,7 @@ Expected Closing:   R{today_summary['expected_closing']:>10.2f}
             cash_display += f"\n\nCASH HISTORY (Last 7 Days):\n{'='*60}\n"
             
             for day_record in history:
-                status = "✅ Reconciled" if day_record.reconciled else "⏳ Pending"
+                status = " Reconciled" if day_record.reconciled else "⏳ Pending"
                 variance_text = ""
                 if day_record.reconciled and day_record.variance is not None:
                     if abs(day_record.variance) < 0.01:
